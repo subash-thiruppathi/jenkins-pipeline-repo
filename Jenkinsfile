@@ -2,10 +2,10 @@ pipeline {
   agent any
 
   environment {
-    BACKEND_REPO = 'https://github.com/subash-thiruppathi/expense-approval-api.git'
-    FRONTEND_REPO = 'https://github.com/subash-thiruppathi/expense-approval-front-end.git'
-    BACKEND_DIR = 'expense-approval-api'
-    FRONTEND_DIR = 'expense-approval-front-end'
+    BACKEND_REPO = 'https://github.com/subash-thiruppathi/approval-flow-nodejs-backend'
+    FRONTEND_REPO = 'https://github.com/subash-thiruppathi/expense-tracker-front-end'
+    BACKEND_DIR = 'approval-flow-nodejs-backend'
+    FRONTEND_DIR = 'expense-tracker-front-end'
   }
 
   stages {
