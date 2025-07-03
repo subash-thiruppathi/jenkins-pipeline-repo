@@ -1,0 +1,31 @@
+services:
+  backend:
+    build: ./expense-approval-api
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./expense-approval-api:/app
+    env_file:
+      - ./expense-approval-api/.env
+    depends_on:
+      - mysql
+
+  frontend:
+    build: ./expense-approval-front-end
+    ports:
+      - "3000:80"
+    volumes:
+      - ./expense-approval-front-end:/app
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: noti
+      MYSQL_DATABASE: expenseTracker
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data: {}
