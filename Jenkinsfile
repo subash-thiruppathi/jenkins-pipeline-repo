@@ -4,16 +4,15 @@ pipeline {
   environment {
     BACKEND_REPO = 'https://github.com/subash-thiruppathi/approval-flow-nodejs-backend.git'
     FRONTEND_REPO = 'https://github.com/subash-thiruppathi/expense-tracker-front-end.git'
-    BACKEND_DIR = 'approval-flow-nodejs-backend'
-    FRONTEND_DIR = 'expense-tracker-front-end'
-    GIT_CREDENTIALS_ID = 'd335fd60-d7d0-4313-afb8-80b497004463' // your existing Jenkins GitHub credential ID
+    BACKEND_DIR = 'expense-approval-api'
+    FRONTEND_DIR = 'expense-approval-front-end'
   }
 
   stages {
     stage('Clone Backend') {
       steps {
         dir("${BACKEND_DIR}") {
-          git branch: 'master', credentialsId: "${GIT_CREDENTIALS_ID}", url: "${BACKEND_REPO}"
+          git url: "${BACKEND_REPO}", branch: 'master', credentialsId: 'github-credentials-id'
         }
       }
     }
@@ -21,10 +20,33 @@ pipeline {
     stage('Clone Frontend') {
       steps {
         dir("${FRONTEND_DIR}") {
-          git branch: 'main', credentialsId: "${GIT_CREDENTIALS_ID}", url: "${FRONTEND_REPO}"
+          git url: "${FRONTEND_REPO}", branch: 'main', credentialsId: 'github-credentials-id'
         }
       }
     }
+
+    stage('Create .env') {
+      steps {
+        withCredentials([
+          string(credentialsId: 'DB_HOST', variable: 'DB_HOST'),
+          string(credentialsId: 'DB_PORT', variable: 'DB_PORT'),
+          string(credentialsId: 'DB_NAME', variable: 'DB_NAME'),
+          string(credentialsId: 'DB_USER', variable: 'DB_USER'),
+          string(credentialsId: 'DB_PASS', variable: 'DB_PASS')
+        ]) {
+          dir("${BACKEND_DIR}") {
+            writeFile file: '.env', text: """
+    DB_HOST=${DB_HOST}
+    DB_PORT=${DB_PORT}
+    DB_NAME=${DB_NAME}
+    DB_USER=${DB_USER}
+    DB_PASS=${DB_PASS}
+            """.stripIndent()
+          }
+        }
+      }
+    }
+
 
     stage('Build Backend') {
       steps {
